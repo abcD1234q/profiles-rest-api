@@ -16,4 +16,4 @@ COPY . .
 ENTRYPOINT [ "python" ]
 
 # Set the default command to run when the container starts
-CMD [ "helloworld.py" ]
+CMD [ "python helloworld.py" ]
