@@ -7,6 +7,7 @@ from rest_framework import viewsets
 from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
 from profiles_api import serializers
 from profiles_api import models
 from profiles_api import permissions
@@ -16,6 +17,9 @@ from profiles_api import permissions
 # Create your views here.
 class HelloApiView(APIView):
     serializer_class=serializers.HelloSerializer
+   
+   
+   
     def get(self, request, format=None):
         an_api_view=[
             'Hare Krishna',
@@ -98,3 +102,15 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
 class UserLogin(ObtainAuthToken):
     renderer_classes=api_settings.DEFAULT_RENDERER_CLASSES
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    authentication_classes=(TokenAuthentication,)
+    serializer_class=serializers.ProfileFeedItemSerializer
+    queryset=models.ProfileFeedItem.objects.all()
+    permission_classes=(
+        permissions.UpdateOwnStatus,
+        IsAuthenticated
+    )
+
+    def perform_create(self, serializer):
+        serializer.save(user_profile=self.request.user)
